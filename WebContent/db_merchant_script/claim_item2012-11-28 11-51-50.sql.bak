@@ -1,0 +1,15 @@
+﻿USE db_merchant;
+
+CREATE TABLE `claim_item` (
+  `unit` int(11) default NULL,
+  `price` float default NULL,
+  `tdate` datetime default NULL,
+  `c_invoice` varchar(10) character set latin1 default NULL,
+  `product_id` varchar(10) character set latin1 default NULL,
+  KEY `claim_claim_item` (`c_invoice`),
+  KEY `product_claim_item` (`product_id`),
+  CONSTRAINT `claim_claim_item` FOREIGN KEY (`c_invoice`) REFERENCES `claim` (`c_invoice`),
+  CONSTRAINT `product_claim_item` FOREIGN KEY (`product_id`) REFERENCES `product2` (`product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+

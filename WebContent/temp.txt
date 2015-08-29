@@ -7,3 +7,29 @@ Mysql 5.0 config
 varchar 
 charecter set :utf-8
 callation : utf-8_unicode_ci
+
+==========Software require==============
+1. Database : MySQL-5.0.x
+2. WebServer : apache-tomcat-6.0.18.zip
+3. Language :  Java 1.6 (jdk-6u14-windows-i586.exe)
+4. tools :
+	- eclipse-php-luna-SR2-win32-x86_64.zip
+	- ToadforMySQLFreeware_450903.zip
+ 
+download @  
+https://drive.google.com/drive/folders/0BzlAPX-BRHITfjdoTXFqTDl6S2VPQXBhOUF6T1EtaEJ6VkU1NV91b2U4SFVJdHkyWDhEcUk
+Require google Account (Login)
+========================
+
+========How to Install ========
+1. install JDK 1.6
+2. install MySQL5.0 & Configuration
+3. Create db_merchant
+   ==db_merchant_script==
+   run create table for db_merchant
+   run insert data
+   run procedures each command
+4. install Eclipse
+5. install tomcat 6.0 Server portable  with Extract to tomcat home
+6. Clone Github  fro url
+================================

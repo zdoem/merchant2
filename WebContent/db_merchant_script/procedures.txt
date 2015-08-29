@@ -1,0 +1,825 @@
+CREATE PROCEDURE db_merchant.`DELETE_BRAND_PRODUCT`(
+  IN   p_bId  int(3),
+  OUT  p_IntResult   int(1)
+)
+BEGIN
+    
+    DECLARE _d_pID  varchar(14) DEFAULT null;
+    DECLARE _d_bID  int(3) DEFAULT 0;
+    
+    SELECT  product_id,
+            brand_product_id
+    INTO  _d_pID,
+          _d_bID 
+    FROM   product
+    WHERE  product.brand_product_id = p_bId;
+    
+    IF  _d_bID > 0 THEN
+      SET p_IntResult = 0;
+    ELSE
+      SET p_IntResult = 1;
+      
+      DELETE FROM db_merchant.brand_product 
+      WHERE brand_product_id = p_bId;
+      
+    END IF;
+END;
+
+CREATE PROCEDURE db_merchant.`DELETE_CUSTOMER`(
+        IN p_Id  char(12)
+     )
+BEGIN                     
+      DELETE FROM db_merchant.customers 
+      WHERE cus_id = p_Id;
+END;
+
+CREATE PROCEDURE db_merchant.`DELETE_FAKE_PRODUCT`(
+        IN p_Id  char(12)
+     )
+BEGIN                     
+      UPDATE db_merchant.PRODUCT  
+      SET 
+          delete_flag ='D'
+      WHERE   product_id = p_Id;
+END;
+
+CREATE PROCEDURE db_merchant.`DELETE_FAKE_USER2`(
+        IN p_Id  char(12)
+     )
+BEGIN                     
+      UPDATE db_merchant.USER2  
+      SET 
+          usr_activate ='D'
+      WHERE   usr_id = p_Id;
+END;
+
+CREATE PROCEDURE db_merchant.`DELETE_PRODUCT`(
+        IN p_Id  char(12)
+     )
+BEGIN                     
+      DELETE FROM db_merchant.PRODUCT 
+      WHERE   product_id = p_Id;
+END;
+
+CREATE PROCEDURE db_merchant.`DELETE_SUPPLIER`(
+       IN p_id        int(5) 
+     )
+BEGIN                     
+      DELETE FROM db_merchant.SUPPLIER 
+      WHERE supp_id = p_Id;
+END;
+
+
+CREATE PROCEDURE db_merchant.`DELETE_TYPE_PRODUCT`(
+  IN   p_tId  int(3),
+  OUT  p_IntResult   int(1)
+)
+BEGIN
+    
+    DECLARE _d_pID  varchar(14) DEFAULT null;
+    DECLARE _d_tID  int(3) DEFAULT 0;
+    
+    SELECT  product_id,
+            type_product_id
+    INTO  _d_pID,
+          _d_tID 
+    FROM   product
+    WHERE  product.type_product_id = p_tId;
+    
+    IF  _d_tID > 0 THEN
+      SET p_IntResult = 0;
+    ELSE
+      SET p_IntResult = 1;
+      
+      DELETE FROM db_merchant.type_product 
+      WHERE type_product_id = p_tId;
+      
+    END IF;
+END;
+
+CREATE PROCEDURE db_merchant.`DELETE_USER2`(
+        IN p_Id  char(12)
+     )
+BEGIN                     
+      DELETE FROM db_merchant.user2 
+      WHERE   usr_id = p_Id;
+END;
+
+CREATE PROCEDURE db_merchant.`GET_BRAND_PRODUCT`(
+        IN   p_bID                int(3),
+        OUT  p_bName            text
+     )
+BEGIN                     
+	 
+   SELECT 
+          b.brand_product_name
+    INTO  
+          p_bName
+    FROM db_merchant.brand_product b 
+    WHERE b.brand_product_id = p_bID;
+END;
+
+CREATE PROCEDURE db_merchant.`GET_CUSTOMER`(
+        IN p_Id  char(12),
+        OUT p_Fname  varchar(40),
+        OUT p_Lname  varchar(40),
+        OUT p_Tel    varchar(40),
+        OUT p_Mobile varchar(40),
+        OUT p_Email   varchar(40),
+        OUT p_Address varchar(255),
+        OUT p_Flag     varchar(1) ,
+        OUT p_Comment  varchar(255)
+     )
+BEGIN                     
+	 
+   SELECT 
+         cus_id,
+         cus_fname,
+         cus_lname,
+         cus_tel,
+         cus_mobile,
+				 cus_email,
+         cus_address,
+         cus_flag ,
+         cus_comment 
+
+    INTO  
+          p_Id,
+          p_Fname,
+          p_Lname,
+          p_Tel,
+          p_Mobile,
+          p_Email,
+          p_Address,
+          p_Flag,
+          p_Comment 
+    FROM  db_merchant.customers 
+    WHERE cus_id = p_Id;
+END;
+
+CREATE PROCEDURE db_merchant.`GET_PRODUCT`(
+IN p_id  varchar(12),
+OUT p_name  varchar(255),
+OUT p_type_id    int(3),
+OUT p_brand_id int(3),
+OUT p_cost   float,
+OUT p_sale   float,
+OUT p_item     int(7) ,
+OUT p_d_start     date,
+OUT p_d_expire     date ,
+OUT p_desc    varchar(255),
+OUT p_brandName  varchar(255),
+OUT p_typeName   varchar(255)
+)
+BEGIN
+    SELECT
+      p.product_name ,
+      p.type_product_id  ,
+      p.brand_product_id ,
+      p.price_cost,
+      p.price_sale ,
+      p.product_item ,
+      p.product_date_start,
+      p.product_date_expire ,
+      p.product_desc ,
+      b.brand_product_name,
+      t.type_product_name
+
+    INTO 
+      p_name,
+      p_type_id,
+      p_brand_id,
+      p_cost,
+      p_sale,
+      p_item,
+      p_d_start,
+      p_d_expire,
+      p_desc,
+      p_brandName,
+      p_typeName
+      
+    FROM product p, brand_product b, type_product t
+    where p.product_id =  p_Id
+    and b.brand_product_id = p.brand_product_id
+    and t.type_product_id = p.type_product_id;
+END;
+
+CREATE PROCEDURE db_merchant.`GET_SUPPLIER`(
+IN p_id        int(5) ,
+OUT p_companyName  varchar(255),
+OUT p_contactName  varchar(255),
+OUT p_email    varchar(40),
+OUT p_tel varchar(40),
+OUT p_mobile   varchar(40),
+OUT p_address varchar(255),
+OUT p_desc     varchar(255) 
+)
+BEGIN
+    SELECT
+      supp_company_name,
+      supp_contact_name,
+      supp_email,
+      supp_tel,
+      supp_mobile,
+      supp_address,
+      supp_desc
+    INTO 
+      p_companyName,
+      p_contactName,
+      p_email,
+      p_tel,
+      p_mobile,
+      p_address,
+      p_desc
+    FROM  db_merchant.SUPPLIER 
+    WHERE supp_id = p_Id;
+
+END;
+
+CREATE PROCEDURE db_merchant.`GET_TYPE_PRODUCT`(
+        IN   p_tID                int(3),
+        OUT  p_tName            text
+     )
+BEGIN                     
+	 
+   SELECT 
+          t.type_product_name
+    INTO  
+          p_tName 
+    FROM db_merchant.type_product t
+    WHERE t.type_product_id = p_tID;
+END;
+
+CREATE PROCEDURE db_merchant.`GET_USER2`(
+IN p_Id char(12),
+OUT p_Fname  varchar(40),
+OUT p_Lname  varchar(40),
+OUT p_Tel    varchar(40),
+OUT p_Mobile varchar(40),
+OUT p_Email   varchar(40),
+OUT p_Address varchar(255),
+OUT p_Login     varchar(40) ,
+OUT p_password    varchar(40) ,
+OUT p_Activate     varchar(40) ,
+OUT p_Citizen_id     varchar(40) ,
+OUT p_date         varchar(40)
+     )
+BEGIN                     
+	 
+   SELECT 
+		usr_id,
+		usr_fname,
+		usr_lname,
+		usr_tel,
+		usr_mobile,
+		usr_email,
+		usr_address,
+		usr_login,
+		usr_password,
+    usr_activate,
+		usr_citizen_id,
+		usr_date
+
+    INTO  
+		p_Id,
+		p_Fname,
+		p_Lname,
+		p_Tel,
+		p_Mobile,
+		p_Email,
+		p_Address,
+		p_Login,
+		p_password,
+		p_Activate,
+		p_Citizen_id,
+    p_date
+    
+    FROM  db_merchant.USER2 
+    WHERE usr_id = p_Id;
+END;
+
+CREATE PROCEDURE db_merchant.`INSERT_BRAND_PRODUCT`(
+IN p_brandName varchar(255)
+)
+BEGIN
+				INSERT INTO BRAND_PRODUCT(brand_product_name)
+				VALUES (p_brandName);
+END;
+
+CREATE PROCEDURE db_merchant.`INSERT_CUSTOMER`(
+IN p_Id char(12),
+IN p_Fname  varchar(40),
+IN p_Lname  varchar(40),
+IN p_Tel    varchar(40),
+IN p_Mobile varchar(40),
+IN p_Email   varchar(40),
+IN p_Address varchar(255),
+IN p_Flag     varchar(1) ,
+IN p_Comment  varchar(255)
+)
+BEGIN
+				INSERT INTO customers(cus_id,cus_fname,cus_lname,cus_tel,cus_mobile,cus_email,cus_address,cus_flag,cus_start_date,cus_comment)
+				VALUES (p_Id,p_Fname,p_Lname,p_Tel,p_Mobile,p_Email,p_Address,p_Flag,NOW(),p_Comment);
+END;
+
+CREATE PROCEDURE db_merchant.`INSERT_IORDER`(
+IN p_OID   varchar(14),
+IN p_cutId  varchar(12),
+IN p_userId varchar(12),
+IN p_total_price float,
+IN p_total_unit int(11)
+)
+BEGIN
+	INSERT INTO db_merchant.ioder(
+		o_invoice,
+		o_date,
+		total_price,
+		total_unit,
+		icus_id,
+		iusr_id 
+	)
+  
+	VALUES (
+		p_OID,
+		NOW(),
+		p_total_price,
+		p_total_unit,
+		p_cutId,
+		p_userId
+	);
+  
+  INSERT INTO db_merchant.payment(
+		PAY_INVOID,
+    PAY_AMOUNT,
+    PAY_FLAG,
+    PAY_TYPE
+	)  
+	VALUES (
+		p_OID,
+    0,
+    'P',
+    'A'
+	);
+  
+END;
+
+CREATE PROCEDURE db_merchant.`INSERT_IORDER_ITEM`(
+IN p_OID   varchar(14),
+IN p_productId  varchar(12),
+IN p_price float,
+IN p_unit int(11)
+)
+BEGIN
+	INSERT INTO db_merchant.ioder_items(
+		o_invoice,
+    product_id,
+		price_sale,
+		unit
+	)
+  
+	VALUES (
+		p_OID,
+		p_productId,
+		p_price,
+		p_unit
+	);
+END;
+
+CREATE PROCEDURE db_merchant.`INSERT_ORDER`(
+IN p_OID  varchar(40),
+IN p_cutId  varchar(10),
+IN p_userId varchar(10),
+IN p_total_price float,
+IN p_total_unit int(11)
+)
+BEGIN
+	INSERT INTO db_merchant.oders(
+		o_invoice,
+		o_date,
+		total_price,
+		total_unit,
+		cus_id,
+		usr_id 
+	)
+	VALUES (
+		p_OID,
+		NOW(),
+		p_total_price,
+		p_total_unit,
+		p_cus_id,
+		p_usr_id
+	);
+END;
+
+CREATE PROCEDURE db_merchant.`INSERT_PRODUCT`(
+IN p_id  varchar(12),
+IN p_name  varchar(255),
+IN p_type_id    int(3),
+IN p_brand_id int(3),
+IN p_cost   float,
+IN p_sale   float,
+IN p_item     int(7) ,
+IN p_d_start     date,
+IN p_d_expire     date ,
+IN p_desc    varchar(255) 
+)
+BEGIN
+	INSERT INTO PRODUCT(
+		product_id,
+		product_name,
+		type_product_id,
+		brand_product_id,
+		price_cost,
+		price_sale,
+		product_item,
+    product_date_start,
+    product_date_expire,
+    product_desc
+	)
+	
+	VALUES (
+		p_id,
+		p_name,
+		p_type_id,
+		p_brand_id,
+		p_cost,
+		p_sale,
+		p_item,
+    p_d_start ,
+    p_d_expire,
+    p_desc
+	);
+END;
+
+CREATE PROCEDURE db_merchant.`INSERT_PURCHASE`(
+IN p_Id varchar(12),
+IN p_total_unit  int,
+IN p_total_price  float,
+IN p_supp_id    varchar(12),
+IN p_usr_id  varchar(12)
+)
+BEGIN
+				INSERT INTO PURCHASE(p_invoice,p_date,total_unit,total_price,supp_id,usr_id)
+				VALUES (p_Id,NOW(),p_total_unit,p_total_price,p_supp_id,p_usr_id);
+END;
+
+CREATE PROCEDURE db_merchant.`INSERT_PURCHASE_ITEMS`(
+IN p_voiceId varchar(12),
+IN p_Id varchar(12),
+IN p_unit  int,
+IN p_price  float 
+)
+BEGIN
+				INSERT INTO purchase_item(p_invoice,
+              product_id,
+              tdate,
+              price,
+              unit)
+				VALUES (p_voiceId,
+              p_Id,
+              NOW(),
+              p_price ,
+              p_unit
+        );
+END;
+
+CREATE PROCEDURE db_merchant.`INSERT_SUPPLIER`(
+IN p_companyName  varchar(255),
+IN p_contactName  varchar(255),
+IN p_email    varchar(40),
+IN p_tel      varchar(40),
+IN p_mobile   varchar(40),
+IN p_address varchar(255),
+IN p_desc     varchar(255) 
+)
+BEGIN
+	INSERT INTO SUPPLIER(
+		supp_company_name,
+		supp_contact_name,
+		supp_email,
+		supp_tel,
+		supp_mobile,
+		supp_address,
+		supp_desc
+	)
+	
+	VALUES (
+		p_companyName,
+		p_contactName,
+		p_email,
+		p_tel,
+		p_mobile,
+		p_address,
+		p_desc
+	);
+END;
+
+CREATE PROCEDURE db_merchant.`INSERT_TYPE_PRODUCT`(
+IN p_typeName varchar(255)
+)
+BEGIN
+				INSERT INTO TYPE_PRODUCT(type_product_name)
+				VALUES (p_typeName);
+END;
+
+CREATE PROCEDURE db_merchant.`INSERT_USER`(
+IN p_Id char(12),
+IN p_Fname  varchar(40),
+IN p_Lname  varchar(40),
+IN p_Tel    varchar(40),
+IN p_Mobile varchar(40),
+IN p_Email   varchar(40),
+IN p_Address varchar(255),
+IN p_Login     varchar(40) ,
+IN p_password    varchar(40) ,
+IN p_Activate     varchar(40) ,
+IN p_Citizen_id     varchar(40) 
+)
+BEGIN
+	INSERT INTO USER2(
+		usr_id,
+		usr_fname,
+		usr_lname,
+		usr_tel,
+		usr_mobile,
+		usr_email,
+		usr_address,
+		usr_login,
+		usr_password,
+		usr_citizen_id,
+		usr_date
+	)
+	
+	VALUES (
+		p_Id,
+		p_Fname,
+		p_Lname,
+		p_Tel,
+		p_Mobile,
+		p_Email,
+		p_Address,
+		p_Login,
+		p_password,
+		p_Activate,
+		p_Citizen_id,
+		NOW()
+	);
+END;
+
+CREATE PROCEDURE db_merchant.`INSERT_USER2`(
+IN p_Id char(12),
+IN p_Fname  varchar(40),
+IN p_Lname  varchar(40),
+IN p_Tel    varchar(40),
+IN p_Mobile varchar(40),
+IN p_Email   varchar(40),
+IN p_Address varchar(255),
+IN p_Login     varchar(40) ,
+IN p_password    varchar(40) ,
+IN p_Activate     varchar(40) ,
+IN p_Citizen_id     varchar(40) 
+)
+BEGIN
+	INSERT INTO USER2(
+		usr_id,
+		usr_fname,
+		usr_lname,
+		usr_tel,
+		usr_mobile,
+		usr_email,
+		usr_address,
+		usr_login,
+		usr_password,
+    usr_activate,
+		usr_citizen_id,
+		usr_date
+	)
+	
+	VALUES (
+		p_Id,
+		p_Fname,
+		p_Lname,
+		p_Tel,
+		p_Mobile,
+		p_Email,
+		p_Address,
+		p_Login,
+		p_password,
+		p_Activate,
+		p_Citizen_id,
+		NOW()
+	);
+END;
+
+CREATE PROCEDURE db_merchant.`TEST_LOX2`(
+  IN p_logId varchar(255),
+  IN p_logName varchar(255),
+  IN p_logUserId varchar(255),
+  IN p_logSession varchar(255),
+  IN p_logMessage varchar(255)
+)
+BEGIN
+				INSERT INTO lox2(log_id ,log_name, log_user_id, log_session, log_message) 
+				VALUES (p_logId , p_logName , p_logUserId ,p_logSession, p_logMessage);
+END;
+
+CREATE PROCEDURE db_merchant.`UPDATE_BRAND_PRODUCT`(
+        IN   p_bId                 int(3),
+        IN   p_brandName           varchar(255)
+     )
+BEGIN                     
+	  UPDATE db_merchant.BRAND_PRODUCT  b
+    SET b.brand_product_name = p_brandName 
+    WHERE b.brand_product_id = p_bId;
+END;
+
+CREATE PROCEDURE db_merchant.`UPDATE_CUSTOMER`(
+        IN p_Id  char(12),
+        IN p_Fname  varchar(40),
+        IN p_Lname  varchar(40),
+        IN p_Tel    varchar(40),
+        IN p_Mobile varchar(40),
+        IN p_Email   varchar(40),
+        IN p_Address varchar(255),
+        IN p_Comment  varchar(255)
+     )
+BEGIN                     
+	  UPDATE db_merchant.customers  c
+    SET c.cus_fname = p_Fname,
+        c.cus_lname = p_Lname,
+        c.cus_tel   = p_Tel,
+        c.cus_mobile = p_Mobile,
+        c.cus_email  = p_Email,
+        c.cus_address = p_Address,
+        c.cus_comment = p_Comment
+
+    WHERE c.cus_id = p_Id;
+END;
+
+CREATE PROCEDURE db_merchant.`UPDATE_PAYMENT`(
+IN p_payId       varchar(12) ,
+IN p_payAmount  float,
+IN p_payFlag  varchar(1),
+IN p_payType   varchar(1),
+IN p_bankRef varchar(40)
+)
+BEGIN
+  	UPDATE db_merchant.PAYMENT  
+    SET 
+      PAY_AMOUNT = p_payAmount,
+      PAY_FLAG = p_payFlag,
+      PAY_TYPE = p_payType,
+      BANK_REF = p_bankRef
+    WHERE  PAY_INVOID = p_payId;
+
+END;
+
+CREATE PROCEDURE db_merchant.`UPDATE_PRODUCT`(
+IN p_id  varchar(12),
+IN p_name  varchar(255),
+IN p_type_id    int(3),
+IN p_brand_id int(3),
+IN p_cost   float,
+IN p_sale   float,
+IN p_item     int(7) ,
+IN p_d_start     date,
+IN p_d_expire     date ,
+IN p_desc    varchar(255) 
+)
+BEGIN
+  	UPDATE db_merchant.PRODUCT  
+    SET 
+      product_name = p_name,
+      type_product_id  = p_type_id,
+      brand_product_id = p_brand_id,
+      price_cost = p_cost,
+      price_sale = p_sale,
+      product_item = p_item,
+      product_date_start= p_d_start,
+      product_date_expire = p_d_expire,
+      product_desc = p_desc
+
+    WHERE  product_id = p_id;
+
+END;
+
+CREATE PROCEDURE db_merchant.`UPDATE_PRODUCT_BY_PURCHASE`(
+IN p_id  varchar(12),
+IN p_cost   float,
+IN p_sale   float,
+IN p_item     int(7) 
+)
+BEGIN
+    DECLARE v_id  varchar(12) DEFAULT NULL;
+    DECLARE v_cost float DEFAULT 0;
+    DECLARE v_sale float DEFAULT 0;
+    DECLARE v_item  int DEFAULT 0;
+
+    /* Retrive Data to variable */
+     SELECT
+        product_id,
+        price_cost,
+        price_sale,
+        product_item
+
+    INTO 
+        v_id,
+        v_cost,
+        v_sale,
+        v_item
+    FROM  db_merchant.PRODUCT 
+    WHERE product_id = p_id;
+    
+    /*************/
+    IF  p_item > 0 THEN
+     SET   v_item = (v_item +p_item);
+    END IF;
+  
+    
+    IF  p_cost > 0 THEN
+     SET    v_cost = p_cost;
+    END IF;
+    
+    IF  p_sale > 0  THEN
+      SET    v_sale = p_sale;
+    END IF;
+    
+    /**************/
+
+    /*******Update********/
+  	UPDATE db_merchant.PRODUCT  
+    SET 
+      price_cost            = v_cost,
+      price_sale            = v_sale,
+      product_item          = v_item
+    WHERE  product_id = p_id;
+
+END;
+
+CREATE PROCEDURE db_merchant.`UPDATE_SUPPLIER`(
+IN p_id        int(5) ,
+IN p_companyName  varchar(255),
+IN p_contactName  varchar(255),
+IN p_email    varchar(40),
+IN p_tel varchar(40),
+IN p_mobile   varchar(40),
+IN p_address varchar(255),
+IN p_desc     varchar(255) 
+)
+BEGIN
+  	UPDATE db_merchant.SUPPLIER  
+    SET 
+      supp_company_name=p_companyName,
+      supp_contact_name=p_contactName,
+      supp_email=p_email,
+      supp_tel=p_tel,
+      supp_mobile=p_mobile,
+      supp_address=p_address,
+      supp_desc = p_desc
+    WHERE  supp_id = p_Id;
+
+END;
+
+CREATE PROCEDURE db_merchant.`UPDATE_TYPE_PRODUCT`(
+        IN   p_tId                 int(3),
+        IN   p_typeName           varchar(255)
+     )
+BEGIN                     
+	  UPDATE db_merchant.TYPE_PRODUCT  t
+    SET t.type_product_name = p_typeName 
+    WHERE t.type_product_id = p_tId;
+END;
+
+
+CREATE PROCEDURE db_merchant.`UPDATE_USER2`(
+IN p_Id char(12),
+IN p_Fname  varchar(40),
+IN p_Lname  varchar(40),
+IN p_Tel    varchar(40),
+IN p_Mobile varchar(40),
+IN p_Email   varchar(40),
+IN p_Address varchar(255),
+IN p_Login     varchar(40) ,
+IN p_password    varchar(40) ,
+IN p_Activate     varchar(40) ,
+IN p_Citizen_id     varchar(40) 
+     )
+BEGIN                     
+	  UPDATE db_merchant.USER2  
+    SET 
+        usr_fname = p_Fname,
+        usr_lname = p_Lname,
+        usr_tel = p_Tel,
+        usr_mobile = p_Mobile,
+        usr_email = p_Email,
+        usr_address = p_Address,
+        usr_login = p_Login,
+        usr_password=p_password,
+        usr_activate ='P',
+		    usr_citizen_id = p_Citizen_id,
+		    usr_date = NOW()
+
+    WHERE  usr_id = p_Id;
+
+END;
+
